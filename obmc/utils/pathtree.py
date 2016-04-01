@@ -181,3 +181,17 @@ class PathTree:
         if not self.root:
             return {}.iteritems()
         return PathTreeItemIterator(self, subtree, depth)
+
+    def dumpd(self, subtree='/'):
+        result = {}
+        d = result
+
+        for k, v in self.iteritems(subtree):
+            elements = ['/'] + filter(bool, k.split('/'))
+            d = result
+            for k in elements:
+                d = d.setdefault(k, {})
+            if v is not None:
+                d.update(v)
+
+        return result
