@@ -18,6 +18,7 @@ import dbus
 
 DBUS_OBJMGR_IFACE = dbus.BUS_DAEMON_IFACE + '.ObjectManager'
 DBUS_UNKNOWN_INTERFACE = 'org.freedesktop.UnknownInterface'
+DBUS_UNKNOWN_SERVICE = 'org.freedesktop.DBus.Error.ServiceUnknown'
 DBUS_UNKNOWN_PROPERTY = 'org.freedesktop.DBus.Error.UnknownProperty'
 DBUS_UNKNOWN_METHOD = 'org.freedesktop.DBus.Error.UnknownMethod'
 DBUS_INVALID_ARGS = 'org.freedesktop.DBus.Error.InvalidArgs'
