@@ -19,11 +19,10 @@ import obmc.dbuslib.enums
 import obmc.utils.misc
 import obmc.utils.pathtree
 
-MAPPER_NAME = 'org.openbmc.objectmapper'
-MAPPER_IFACE = MAPPER_NAME + '.ObjectMapper'
-MAPPER_PATH = '/org/openbmc/objectmapper/objectmapper'
-ENUMERATE_IFACE = 'org.openbmc.Object.Enumerate'
-MAPPER_NOT_FOUND = 'org.openbmc.objectmapper.Error.NotFound'
+MAPPER_NAME = 'org.openbmc.ObjectMapper'
+MAPPER_IFACE = MAPPER_NAME
+MAPPER_PATH = '/org/openbmc/ObjectMapper'
+MAPPER_NOT_FOUND = MAPPER_NAME + '.Error.NotFound'
 
 
 class Mapper:
