@@ -90,7 +90,7 @@ class DbusProperties(dbus.service.Object):
     @dbus.service.method(
         "org.openbmc.Object.Properties", in_signature='sa{sv}')
     def SetMultiple(self, interface_name, prop_dict):
-        if (interface_name in self.properties):
+        if (interface_name not in self.properties):
             self.properties[interface_name] = {}
 
         value_changed = False
