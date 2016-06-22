@@ -144,29 +144,9 @@ class DbusObjectManager(dbus.service.Object):
     @dbus.service.signal(
         "org.freedesktop.DBus.ObjectManager", signature='oa{sa{sv}}')
     def InterfacesAdded(self, object_path, properties):
-        self.ObjectAdded(object_path, "")
+        pass
 
     @dbus.service.signal(
         "org.freedesktop.DBus.ObjectManager", signature='oas')
     def InterfacesRemoved(self, object_path, interfaces):
         pass
-
-    ## Legacy support, need to eventually refactor out
-    @dbus.service.signal(
-        "org.openbmc.Object.ObjectMapper", signature='ss')
-    def ObjectAdded(self, object_path, interface_name):
-        pass
-
-    ## flattens interfaces
-    @dbus.service.method(
-        'org.openbmc.Object.Enumerate', in_signature='',
-        out_signature='a{sa{sv}}')
-    def enumerate(self):
-        data = {}
-        for objpath in self.objects.keys():
-            props = self.objects[objpath].properties
-            data[objpath] = {}
-            for iface in props.keys():
-                data[objpath].update(props[iface])
-
-        return data
