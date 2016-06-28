@@ -45,6 +45,19 @@ class DbusProperties(dbus.service.Object):
         dbus.service.Object.__init__(self)
         self.properties = {}
         self.object_path = ""
+        self._export = False
+
+    def unmask_signals(self):
+        self._export = True
+        inst = super(DbusProperties, self)
+        if hasattr(inst, 'unmask_signals'):
+            inst.unmask_signals()
+
+    def mask_signals(self):
+        self._export = False
+        inst = super(DbusProperties, self)
+        if hasattr(inst, 'mask_signals'):
+            inst.mask_signals()
 
     @dbus.service.method(
         dbus.PROPERTIES_IFACE,
@@ -79,13 +92,15 @@ class DbusProperties(dbus.service.Object):
             old_value = self.properties[interface_name][property_name]
             if (old_value != new_value):
                 self.properties[interface_name][property_name] = new_value
-                self.PropertiesChanged(
-                    interface_name, {property_name: new_value}, [])
+                if self._export:
+                    self.PropertiesChanged(
+                        interface_name, {property_name: new_value}, [])
 
         except:
             self.properties[interface_name][property_name] = new_value
-            self.PropertiesChanged(
-                interface_name, {property_name: new_value}, [])
+            if self._export:
+                self.PropertiesChanged(
+                    interface_name, {property_name: new_value}, [])
 
     @dbus.service.method(
         "org.openbmc.Object.Properties", in_signature='sa{sv}')
@@ -105,7 +120,7 @@ class DbusProperties(dbus.service.Object):
             except:
                 self.properties[interface_name][property_name] = new_value
                 value_changed = True
-        if (value_changed is True):
+        if (value_changed is True and self._export):
             self.PropertiesChanged(interface_name, prop_dict, [])
 
     @dbus.service.signal(
@@ -119,15 +134,30 @@ class DbusObjectManager(dbus.service.Object):
     def __init__(self):
         dbus.service.Object.__init__(self)
         self.objects = {}
+        self._export = False
+
+    def unmask_signals(self):
+        self._export = True
+        inst = super(DbusObjectManager, self)
+        if hasattr(inst, 'unmask_signals'):
+            inst.unmask_signals()
+
+    def mask_signals(self):
+        self._export = False
+        inst = super(DbusObjectManager, self)
+        if hasattr(inst, 'mask_signals'):
+            inst.mask_signals()
 
     def add(self, object_path, obj):
         self.objects[object_path] = obj
-        self.InterfacesAdded(object_path, obj.properties)
+        if self._export:
+            self.InterfacesAdded(object_path, obj.properties)
 
     def remove(self, object_path):
         obj = self.objects.pop(object_path, None)
         obj.remove_from_connection()
-        self.InterfacesRemoved(object_path, obj.properties.keys())
+        if self._export:
+            self.InterfacesRemoved(object_path, obj.properties.keys())
 
     def get(self, object_path, default=None):
         return self.objects.get(object_path, default)
