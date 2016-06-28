@@ -14,7 +14,7 @@
 # implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-from xml.etree import ElementTree
+import xml.etree.ElementTree as ET
 import dbus
 
 
@@ -98,7 +98,7 @@ class IntrospectionParser:
             return None
 
         return IntrospectionNodeParser(
-            ElementTree.fromstring(data),
+            ET.fromstring(data),
             self.tag_match,
             self.intf_match)
 
@@ -134,3 +134,68 @@ class IntrospectionParser:
             items.update(callback(path + k, parser))
 
         return items
+
+
+def find_dbus_interfaces(conn, service, path, match):
+    class __FindInterfaces(object):
+        def __init__(self):
+            self.results = {}
+
+        @staticmethod
+        def __introspect(service, path):
+            obj = conn.get_object(service, path, introspect=False)
+            iface = dbus.Interface(obj, dbus.INTROSPECTABLE_IFACE)
+            return iface.Introspect()
+
+        @staticmethod
+        def __get_managed_objects(service, om):
+            obj = conn.get_object(service, om, introspect=False)
+            iface = dbus.Interface(
+                obj, dbus.BUS_DAEMON_IFACE + '.ObjectManager')
+            return iface.GetManagedObjects()
+
+        @staticmethod
+        def __to_path(elements):
+            return '/' + '/'.join(elements)
+
+        @staticmethod
+        def __to_path_elements(path):
+            return filter(bool, path.split('/'))
+
+        def __call__(self, service, path):
+            self.results = {}
+            self.__find_interfaces(service, path)
+            return self.results
+
+        @staticmethod
+        def __match(iface):
+            return iface == dbus.BUS_DAEMON_IFACE + '.ObjectManager' \
+                or match(iface)
+
+        def __find_interfaces(self, service, path):
+            path_elements = self.__to_path_elements(path)
+            path = self.__to_path(path_elements)
+            root = ET.fromstring(self.__introspect(service, path))
+
+            ifaces = filter(
+                self.__match,
+                [x.attrib.get('name') for x in root.findall('interface')])
+            self.results[path] = ifaces
+
+            if dbus.BUS_DAEMON_IFACE + '.ObjectManager' in ifaces:
+                objs = self.__get_managed_objects(service, path)
+                for k, v in objs.iteritems():
+                    self.results[k] = v
+            else:
+                children = filter(
+                    bool,
+                    [x.attrib.get('name') for x in root.findall('node')])
+                children = [
+                    self.__to_path(
+                        path_elements + self.__to_path_elements(x))
+                    for x in sorted(children)]
+                for child in children:
+                    if child not in self.results:
+                        self.__find_interfaces(service, child)
+
+    return __FindInterfaces()(service, path)
