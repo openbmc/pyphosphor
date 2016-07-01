@@ -111,7 +111,9 @@ class SensorThresholds(DbusProperties):
         if self.Get(iface, 'threshold_state') != current_state and \
                 current_state == "CRITICAL" and \
                 self.Get(iface, 'emergency_enabled') is True:
-            self.Emergency()
+            message = IFACE_NAME + ': ' + type(self).__name__ + \
+			' :check_thresholds triggered emergency: ' + str(value)
+            self.Emergency(message)
 
         self.Set(iface, 'threshold_state', current_state)
         worst = self.properties[iface]['worst_threshold_state']
@@ -121,8 +123,8 @@ class SensorThresholds(DbusProperties):
 
         return rtn
 
-    @dbus.service.signal(IFACE_NAME, signature='')
-    def Emergency(self):
+    @dbus.service.signal(IFACE_NAME, signature='s')
+    def Emergency(self, message):
         pass
 
 
