@@ -17,6 +17,7 @@
 import os
 import cPickle
 import json
+import obmc.utils.misc
 
 CACHE_PATH = '/var/cache/obmc/'
 
@@ -29,8 +30,10 @@ def getCacheFilename(obj_path, iface_name):
 
 def save(obj_path, iface_name, properties):
     print "Caching: "+obj_path
+    filename = getCacheFilename(obj_path, iface_name)
+    parent = os.path.dirname(filename)
     try:
-        filename = getCacheFilename(obj_path, iface_name)
+        obmc.utils.misc.mkdir_p(parent)
         output = open(filename, 'wb')
         try:
             ## use json module to convert dbus datatypes
