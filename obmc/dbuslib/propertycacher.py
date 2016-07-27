@@ -29,8 +29,11 @@ def getCacheFilename(obj_path, iface_name):
 
 def save(obj_path, iface_name, properties):
     print "Caching: "+obj_path
+    filename = getCacheFilename(obj_path, iface_name)
+    parent = os.path.dirname(filename)
     try:
-        filename = getCacheFilename(obj_path, iface_name)
+        if not os.path.exists(parent):
+            os.makedirs(parent)
         output = open(filename, 'wb')
         try:
             ## use json module to convert dbus datatypes
