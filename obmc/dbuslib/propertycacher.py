@@ -34,16 +34,14 @@ def save(obj_path, iface_name, properties):
     try:
         if not os.path.exists(parent):
             os.makedirs(parent)
-        output = open(filename, 'wb')
-        try:
-            ## use json module to convert dbus datatypes
-            props = json.dumps(properties[iface_name])
-            prop_obj = json.loads(props)
-            cPickle.dump(prop_obj, output)
-        except Exception as e:
-            print "ERROR: "+str(e)
-        finally:
-            output.close()
+	with open(filename, 'wb') as output:
+            try:
+                ## use json module to convert dbus datatypes
+                props = json.dumps(properties[iface_name])
+                prop_obj = json.loads(props)
+                cPickle.dump(prop_obj, output)
+            except Exception as e:
+                print "ERROR: "+str(e)
     except:
         print "ERROR opening cache file: "+filename
 
