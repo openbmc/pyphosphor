@@ -171,11 +171,11 @@ class HwmonSensor(SensorValue, SensorThresholds):
             self.value_dirty = False
             val = (
                 self.properties[SensorValue.IFACE_NAME]['value']
-                - offset) * scale
+                - offset) * (10 ** scale)
             return [True, val]
         else:
             # Keep the val as integer. scale may be floating point
-            val = int(value/scale + offset)
+            val = value/(10 ** scale) + offset
             if (val != self.value):
                 SensorValue.setValue(self, val)
                 self.check_thresholds(val)
