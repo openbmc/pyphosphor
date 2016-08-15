@@ -165,20 +165,28 @@ class HwmonSensor(SensorValue, SensorThresholds):
     def setByPoll(self, value):
         scale = self.properties[HwmonSensor.IFACE_NAME]['scale']
         offset = self.properties[HwmonSensor.IFACE_NAME]['offset']
+        try:
+            adjust = self.properties[HwmonSensor.IFACE_NAME]['adjust']
+            if adjust == 0:
+                adjust = 1
+        except:
+            adjust = 1
+
         if self.value_dirty:
             ## new value externally set, so just return to hwmon
             ## process to write value
             self.value_dirty = False
-            val = (
+            val = int((
                 self.properties[SensorValue.IFACE_NAME]['value']
-                - offset) * scale
+                - offset) * adjust)
             return [True, val]
         else:
-            # Keep the val as integer. scale may be floating point
-            val = int(value/scale + offset)
+            # Keep the val as integer. adjust may be floating point
+            val = int(value/adjust + offset)
             if (val != self.value):
                 SensorValue.setValue(self, val)
-                self.check_thresholds(val)
+                # scale the value to check threshold
+                self.check_thresholds(val * (10 ** scale))
                 self.value = val
 
             return [False, 0]
