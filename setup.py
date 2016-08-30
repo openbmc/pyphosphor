@@ -1,5 +1,5 @@
 from distutils.core import setup
-setup(name='pyobmc',
+setup(name='pyphosphor',
       version='1.0',
       packages=['obmc', 'obmc.dbuslib', 'obmc.utils'],
       )
