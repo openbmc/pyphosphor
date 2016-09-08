@@ -235,9 +235,14 @@ class BootProgressSensor(VirtualSensor):
         SensorValue.setValue(self, value)
         if (value == "FW Progress, Starting OS"):
             self.GotoSystemState("HOST_BOOTED")
+        self.BootProgress(value)
 
     @dbus.service.signal(CONTROL_IFACE, signature='s')
     def GotoSystemState(self, state):
+        pass
+
+    @dbus.service.signal(CONTROL_IFACE, signature='s')
+    def BootProgress(self, state):
         pass
 
 
