@@ -30,10 +30,9 @@ def get_dbus():
 
 
 class DbusProperties(dbus.service.Object):
-    def __init__(self):
-        dbus.service.Object.__init__(self)
+    def __init__(self, **kw):
+        super(DbusProperties, self).__init__(**kw)
         self.properties = {}
-        self.object_path = ""
         self._export = False
 
     def unmask_signals(self):
@@ -120,8 +119,8 @@ class DbusProperties(dbus.service.Object):
 
 
 class DbusObjectManager(dbus.service.Object):
-    def __init__(self):
-        dbus.service.Object.__init__(self)
+    def __init__(self, **kw):
+        super(DbusObjectManager, self).__init__(**kw)
         self.objects = {}
         self._export = False
 
