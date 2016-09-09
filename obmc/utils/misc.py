@@ -38,8 +38,13 @@ class Path:
         return prefix + '/'.join(self.parts[first:last])
 
 
-def org_dot_openbmc_match(name):
-    return 'org.openbmc' in name
+def org_dot_openbmc_match(name, sep='.'):
+    matches = [
+        ['org', 'openbmc'],
+        ['xyz', 'openbmc-project'],
+    ]
+    return any(
+        [x in name for x in [ sep.join(y) for y in matches]])
 
 
 class ListMatch(object):
