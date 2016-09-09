@@ -15,6 +15,8 @@
 # permissions and limitations under the License.
 
 import dbus
+import dbus.service
+import dbus.exceptions
 
 OBJ_PREFIX = '/org/openbmc'
 
