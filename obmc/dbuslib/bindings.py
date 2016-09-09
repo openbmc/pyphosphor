@@ -16,28 +16,15 @@
 
 import dbus
 
-BUS_PREFIX = 'org.openbmc'
-OBJ_PREFIX = "/org/openbmc"
-BUS = "system"
+OBJ_PREFIX = '/org/openbmc'
 
 
 def is_unique(connection):
     return connection[0] == ':'
 
 
-def get_system_name():
-    #use filename as system name, strip off path and ext
-    parts = __file__.replace('.pyc', '').replace('.py', '').split('/')
-    return parts[len(parts)-1]
-
-
 def get_dbus():
-    bus = None
-    if (BUS == "session"):
-        bus = dbus.SessionBus()
-    else:
-        bus = dbus.SystemBus()
-    return bus
+    return dbus.SystemBus()
 
 
 class DbusProperties(dbus.service.Object):
