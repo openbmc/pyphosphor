@@ -15,29 +15,6 @@
 # permissions and limitations under the License.
 
 
-class Path:
-    def __init__(self, path):
-        self.parts = filter(bool, path.split('/'))
-
-    def rel(self, first=None, last=None):
-        # relative
-        return self.get('', first, last)
-
-    def fq(self, first=None, last=None):
-        # fully qualified
-        return self.get('/', first, last)
-
-    def depth(self):
-        return len(self.parts)
-
-    def get(self, prefix='/', first=None, last=None):
-        if not first:
-            first = 0
-        if not last:
-            last = self.depth()
-        return prefix + '/'.join(self.parts[first:last])
-
-
 def org_dot_openbmc_match(name, sep='.'):
     matches = [
         ['org', 'openbmc'],
