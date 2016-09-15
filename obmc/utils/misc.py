@@ -14,14 +14,18 @@
 # implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-
-def org_dot_openbmc_match(name, sep='.'):
+def org_dot_openbmc_match_strings(sep='.'):
     matches = [
         ['org', 'openbmc'],
-        ['xyz', 'openbmc-project'],
+        ['xyz', 'openbmc_project'],
     ]
+
+    return [sep.join(y) for y in matches]
+
+
+def org_dot_openbmc_match(name, sep='.'):
     return any(
-        [x in name for x in [ sep.join(y) for y in matches]])
+        [x in name for x in org_dot_openbmc_match_strings(sep)])
 
 
 class ListMatch(object):
