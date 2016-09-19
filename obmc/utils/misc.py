@@ -14,17 +14,17 @@
 # implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-def org_dot_openbmc_match_strings(sep='.'):
+def org_dot_openbmc_match_strings(sep='.', prefix=''):
     matches = [
         ['org', 'openbmc'],
         ['xyz', 'openbmc_project'],
     ]
 
-    return [sep.join(y) for y in matches]
+    return [prefix + sep.join(y) for y in matches]
 
 
-def org_dot_openbmc_match(name, sep='.'):
-    names = org_dot_openbmc_match_strings(sep)
+def org_dot_openbmc_match(name, sep='.', prefix=''):
+    names = org_dot_openbmc_match_strings(sep=sep, prefix=prefix)
     return any(
         [x in name or name in x for x in names])
 
