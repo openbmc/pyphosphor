@@ -24,8 +24,9 @@ def org_dot_openbmc_match_strings(sep='.'):
 
 
 def org_dot_openbmc_match(name, sep='.'):
+    names = org_dot_openbmc_match_strings(sep)
     return any(
-        [x in name for x in org_dot_openbmc_match_strings(sep)])
+        [x in name or name in x for x in names])
 
 
 class ListMatch(object):
