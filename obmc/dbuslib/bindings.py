@@ -31,6 +31,7 @@ def get_dbus():
 
 class DbusProperties(dbus.service.Object):
     def __init__(self, **kw):
+        self.validator = kw.pop('validator')
         super(DbusProperties, self).__init__(**kw)
         self.properties = {}
         self._export = False
@@ -76,6 +77,10 @@ class DbusProperties(dbus.service.Object):
     def Set(self, interface_name, property_name, new_value):
         if (interface_name not in self.properties):
             self.properties[interface_name] = {}
+
+        if self.validator:
+            self.validator(interface_name, property_name, new_value)
+
         try:
             old_value = self.properties[interface_name][property_name]
             if (old_value != new_value):
