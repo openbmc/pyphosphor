@@ -31,7 +31,7 @@ def get_dbus():
 
 class DbusProperties(dbus.service.Object):
     def __init__(self, **kw):
-        self.validator = kw.pop('validator')
+        self.validator = kw.pop('validator', None)
         super(DbusProperties, self).__init__(**kw)
         self.properties = {}
         self._export = False
