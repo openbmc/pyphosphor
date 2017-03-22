@@ -295,3 +295,27 @@ class OperatingSystemStatusSensor(VirtualSensor):
     def SystemStateHandler(self, state):
         if (state == "HOST_POWERED_OFF"):
             self.setValue("Off")
+
+class TurboAllowedSensor(VirtualSensor):
+    def __init__(self, bus, name):
+        VirtualSensor.__init__(self, bus, name)
+        self.setValue("Disabled")
+
+    ##override setValue method
+    @dbus.service.method(
+        SensorValue.IFACE_NAME, in_signature='b', out_signature='')
+    def setValue(self, value):
+        super(TurboAllowedSensor,self).setValue(value)
+
+## hard coding value  to 10. New story to retrieve this from power supply.
+
+class PSDeratingSensor(VirtualSensor):
+    def __init__(self, bus, name):
+        VirtualSensor.__init__(self, bus, name)
+        super(PSDeratingSensor,self).setValue(10)
+    
+    ##override setValue method
+    @dbus.service.method(
+        SensorValue.IFACE_NAME, in_signature='v', out_signature='')
+    def setValue(self, value):
+        print "Setting Power Supply Derating is not allowed"
