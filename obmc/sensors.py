@@ -295,3 +295,14 @@ class OperatingSystemStatusSensor(VirtualSensor):
     def SystemStateHandler(self, state):
         if (state == "HOST_POWERED_OFF"):
             self.setValue("Off")
+
+class PowerSupplyDeratingSensor(VirtualSensor):
+    def __init__(self, bus, name):
+        VirtualSensor.__init__(self, bus, name)
+        super(PowerSupplyDeratingSensor,self).setValue(10)
+
+    ## override setValue method
+    @dbus.service.method(
+        SensorValue.IFACE_NAME, in_signature='v', out_signature='')
+    def setValue(self, value):
+        print "Setting Power Supply Derating is not allowed"
