@@ -307,6 +307,17 @@ class PowerSupplyRedundancySensor(VirtualSensor):
     def setValue(self, value):
         print "Setting Power Supply Redundancy is not allowed"
 
+class PowerSupplyDeratingSensor(VirtualSensor):
+    def __init__(self, bus, name):
+        VirtualSensor.__init__(self, bus, name)
+        super(PowerSupplyDeratingSensor,self).setValue(10)
+
+    ## override setValue method
+    @dbus.service.method(
+        SensorValue.IFACE_NAME, in_signature='v', out_signature='')
+    def setValue(self, value):
+        print "Setting Power Supply Derating is not allowed"
+
 class TurboAllowedSensor(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
