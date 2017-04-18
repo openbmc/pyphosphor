@@ -199,22 +199,12 @@ class PowerCap(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
         SensorValue.setValue(self, 0)
-        self.sysfs_attr = "/sys/class/hwmon/hwmon3/user_powercap"
 
     ##override setValue method
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
-        try:
-            cmd_str = "echo "+str(value)+" > "+self.sysfs_attr
-            ret = subprocess.check_output(cmd_str, shell=True)
-        except subprocess.CalledProcessError as powerexc:
-            print "Set PowerCap Error", powerexc.returncode,
-            powerexc.output
-            return
-        print "Set PowerCap: ", value
-        SensorValue.setValue(self, value)
-
+         raise Exception("ERROR: Setting Power Cap is not allowed")
 
 class BootProgressSensor(VirtualSensor):
     def __init__(self, bus, name):
