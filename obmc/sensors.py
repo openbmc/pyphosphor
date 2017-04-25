@@ -274,6 +274,12 @@ class BootCountSensor(VirtualSensor):
         VirtualSensor.__init__(self, bus, name)
         self.setValue(2)
 
+    ##override setValue method
+    @dbus.service.method(
+        SensorValue.IFACE_NAME, in_signature='v', out_signature='')
+    def setValue(self, value):
+        SensorValue.setValue(self, value)
+
 
 class OperatingSystemStatusSensor(VirtualSensor):
     def __init__(self, bus, name):
