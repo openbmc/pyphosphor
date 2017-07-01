@@ -92,7 +92,7 @@ class BootCountSensor(VirtualSensor):
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
         print "Setting boot count to " + str(value)
-        SensorValue.setValue(self,value)
+        SensorValue.setValue(self, value)
 
 
 class OperatingSystemStatusSensor(VirtualSensor):
@@ -106,10 +106,11 @@ class OperatingSystemStatusSensor(VirtualSensor):
         if (state == "HOST_POWERED_OFF"):
             self.setValue("Off")
 
+
 class PowerSupplyRedundancySensor(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
-        super(PowerSupplyRedundancySensor,self).setValue("Disabled")
+        super(PowerSupplyRedundancySensor, self).setValue("Disabled")
 
     ## override setValue method
     @dbus.service.method(
@@ -117,16 +118,18 @@ class PowerSupplyRedundancySensor(VirtualSensor):
     def setValue(self, value):
         print "Setting Power Supply Redundancy is not allowed"
 
+
 class PowerSupplyDeratingSensor(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
-        super(PowerSupplyDeratingSensor,self).setValue(10)
+        super(PowerSupplyDeratingSensor, self).setValue(10)
 
     ## override setValue method
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
         print "Setting Power Supply Derating is not allowed"
+
 
 class TurboAllowedSensor(VirtualSensor):
     def __init__(self, bus, name):
@@ -137,4 +140,4 @@ class TurboAllowedSensor(VirtualSensor):
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='b', out_signature='')
     def setValue(self, value):
-        super(TurboAllowedSensor,self).setValue(value)
+        super(TurboAllowedSensor, self).setValue(value)
