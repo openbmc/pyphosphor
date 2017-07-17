@@ -18,6 +18,7 @@ def org_dot_openbmc_match_strings(sep='.', prefix=''):
     matches = [
         ['org', 'openbmc'],
         ['xyz', 'openbmc_project'],
+        ['org', 'open_power'],
     ]
 
     return [prefix + sep.join(y) for y in matches]
