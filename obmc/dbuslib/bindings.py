@@ -18,7 +18,7 @@ import dbus
 import dbus.service
 import dbus.exceptions
 
-OBJ_PREFIX = '/org/openbmc'
+OBJ_PREFIX = '/xyz/openbmc_project'
 
 
 def is_unique(connection):
