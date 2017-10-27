@@ -123,6 +123,41 @@ class DbusProperties(dbus.service.Object):
         pass
 
 
+def add_interfaces_to_class(cls, ifaces):
+    """
+    The built-in Introspect method in dbus-python doesn't find
+    interfaces if the @method or @signal decorators aren't used
+    (property-only interfaces).  Use this method on a class
+    derived from dbus.service.Object to help the dbus-python provided
+    Introspect method find these interfaces.
+
+    Arguments:
+    cls -- The dbus.service.Object superclass to add interfaces to.
+    ifaces -- The property-only interfaces to add to the class.
+    """
+
+    for iface in ifaces:
+        class_table_key = '{}.{}'.format(cls.__module__, cls.__name__)
+        cls._dbus_class_table[class_table_key].setdefault(iface, {})
+
+
+def add_interfaces(ifaces):
+    """
+    A class decorator for add_interfaces_to_class.
+    """
+
+    def decorator(cls):
+        undecorated = cls.__init__
+
+        def ctor(obj, *a, **kw):
+            undecorated(obj, *a, **kw)
+            add_interfaces_to_class(cls, ifaces)
+
+        cls.__init__ = ctor
+        return cls
+    return decorator
+
+
 class DbusObjectManager(dbus.service.Object):
     def __init__(self, **kw):
         super(DbusObjectManager, self).__init__(**kw)
