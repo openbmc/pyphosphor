@@ -104,7 +104,7 @@ class IntrospectionParser:
 
     def _discover_flat(self, path, parser):
         items = {}
-        interfaces = parser.get_interfaces().keys()
+        interfaces = list(parser.get_interfaces().keys())
         if interfaces:
             items[path] = {}
             items[path]['interfaces'] = interfaces
