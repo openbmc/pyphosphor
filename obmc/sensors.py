@@ -110,11 +110,12 @@ class OperatingSystemStatusSensor(VirtualSensor):
 class PowerSupplyRedundancySensor(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
-        super(PowerSupplyRedundancySensor, self).setValue("Disabled")
+        ## Setting default to enabled.
+        super(PowerSupplyRedundancySensor, self).setValue(1)
 
     ## override setValue method
     @dbus.service.method(
-        SensorValue.IFACE_NAME, in_signature='v', out_signature='')
+        SensorValue.IFACE_NAME, in_signature='b', out_signature='')
     def setValue(self, value):
         print "Setting Power Supply Redundancy is not allowed"
 
