@@ -58,7 +58,7 @@ class DbusProperties(dbus.service.Object):
             return v
         except:
             raise dbus.exceptions.DBusException(
-                "org.freedesktop.UnknownProperty: "+property_name)
+                "org.freedesktop.DBus.Error.UnknownProperty: "+property_name)
 
     @dbus.service.method(
         dbus.PROPERTIES_IFACE,
@@ -69,7 +69,7 @@ class DbusProperties(dbus.service.Object):
             return d
         except:
             raise dbus.exceptions.DBusException(
-                "org.freedesktop.UnknownInterface: "+interface_name)
+                "org.freedesktop.DBus.Error.UnknownInterface: "+interface_name)
 
     @dbus.service.method(
         dbus.PROPERTIES_IFACE,
