@@ -110,7 +110,41 @@ class OperatingSystemStatusSensor(VirtualSensor):
 class PowerSupplyRedundancySensor(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
-        self.setValue("Enabled")
+        self.bus_name='xyz.openbmc_project.State.Host'
+        self.obj_path='/xyz/openbmc_project/control/PowerSupplyRedundancy'
+        self.iface='xyz.openbmc_project.Control.PowerSupplyRedundancy'
+        self.property_name='PowerSupplyRedundancyEnabled'
+        super(PowerSupplyRedundancySensor, self).setValue("Enabled")
+
+    ## override setValue method
+    @dbus.service.method(
+        SensorValue.IFACE_NAME, in_signature='v', out_signature='')
+    def setValue(self, value):
+        if (value == "Enabled"):
+            intf = self.getPowerSupplyInterface()
+            intf.Set(self.iface, self.property_name, True)
+        elif (value == "Disabled"):
+            intf = self.getPowerSupplyInterface()
+            intf.Set(self.iface, self.property_name, False)
+        else:
+            print "Invalid Power Supply Redundancy value"
+            return
+        super(PowerSupplyRedundancySensor, self).setValue(value)
+
+    ## override getValue method
+    @dbus.service.method(
+        SensorValue.IFACE_NAME, in_signature='', out_signature='v')
+    def getValue(self):
+        intf = self.getPowerSupplyInterface()
+        value = intf.Get(self.iface, self.property_name)
+        if value:
+            return "Enabled"
+        return "Disabled"
+
+    def getPowerSupplyInterface(self):
+        obj = bus.get_object(self.bus_name, self.obj_path, introspect=False)
+        return dbus.Interface(obj, self.iface)
+
 
 class PowerSupplyDeratingSensor(VirtualSensor):
     def __init__(self, bus, name):
