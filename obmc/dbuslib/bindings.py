@@ -56,7 +56,7 @@ class DbusProperties(dbus.service.Object):
         try:
             v = d[property_name]
             return v
-        except:
+        except Exception:
             raise dbus.exceptions.DBusException(
                 "Unknown property: '{}'".format(property_name),
                 name="org.freedesktop.DBus.Error.UnknownProperty")
@@ -68,7 +68,7 @@ class DbusProperties(dbus.service.Object):
         try:
             d = self.properties[interface_name]
             return d
-        except:
+        except Exception:
             raise dbus.exceptions.DBusException(
                 "Unknown interface: '{}'".format(interface_name),
                 name="org.freedesktop.DBus.Error.UnknownInterface")
@@ -91,7 +91,7 @@ class DbusProperties(dbus.service.Object):
                     self.PropertiesChanged(
                         interface_name, {property_name: new_value}, [])
 
-        except:
+        except Exception:
             self.properties[interface_name][property_name] = new_value
             if self._export:
                 self.PropertiesChanged(
@@ -112,7 +112,7 @@ class DbusProperties(dbus.service.Object):
                     self.properties[interface_name][property_name] = new_value
                     value_changed = True
 
-            except:
+            except Exception:
                 self.properties[interface_name][property_name] = new_value
                 value_changed = True
         if (value_changed is True and self._export):

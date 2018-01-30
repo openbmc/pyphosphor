@@ -14,6 +14,7 @@
 # implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
+import json
 import os
 # TODO: openbmc/openbmc#2994 remove python 2 support
 import sys
@@ -21,7 +22,6 @@ if sys.version_info[0] < 3:
     import cPickle as pickle
 else:
     import pickle
-import json
 
 CACHE_PATH = '/var/cache/obmc/'
 
@@ -41,18 +41,18 @@ def save(obj_path, iface_name, properties):
             os.makedirs(parent)
         with open(filename, 'wb') as output:
             try:
-                ## use json module to convert dbus datatypes
+                # use json module to convert dbus datatypes
                 props = json.dumps(properties[iface_name])
                 prop_obj = json.loads(props)
                 pickle.dump(prop_obj, output)
             except Exception as e:
                 print("ERROR: "+str(e))
-    except:
+    except Exception:
         print("ERROR opening cache file: "+filename)
 
 
 def load(obj_path, iface_name, properties):
-    ## overlay with pickled data
+    # overlay with pickled data
     filename = getCacheFilename(obj_path, iface_name)
     if (os.path.isfile(filename)):
         if iface_name in properties:

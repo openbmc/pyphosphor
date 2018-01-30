@@ -21,7 +21,7 @@ import dbus.service
 from obmc.dbuslib.bindings import DbusProperties
 
 
-## Abstract class, must subclass
+# Abstract class, must subclass
 class SensorValue(DbusProperties):
     IFACE_NAME = 'org.openbmc.SensorValue'
 
@@ -61,7 +61,7 @@ class BootProgressSensor(VirtualSensor):
         if (state == "HOST_POWERED_OFF"):
             self.setValue("Off")
 
-    ##override setValue method
+    # override setValue method
     @dbus.service.method(
         SensorValue.IFACE_NAME,
         in_signature='v', out_signature='')
@@ -87,7 +87,7 @@ class BootCountSensor(VirtualSensor):
         # SBE side switch boot attempt
         self.setValue(3)
 
-    ## override setValue method for debug purposes
+    # override setValue method for debug purposes
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
@@ -158,7 +158,7 @@ class PowerSupplyDeratingSensor(VirtualSensor):
         VirtualSensor.__init__(self, bus, name)
         super(PowerSupplyDeratingSensor, self).setValue(90)
 
-    ## override setValue method
+    # override setValue method
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
@@ -170,7 +170,7 @@ class TurboAllowedSensor(VirtualSensor):
         VirtualSensor.__init__(self, bus, name)
         self.setValue(0)
 
-    ## override setValue method
+    # override setValue method
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='b', out_signature='')
     def setValue(self, value):

@@ -14,6 +14,7 @@
 # implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
+
 def org_dot_openbmc_match_strings(sep='.', prefix=''):
     matches = [
         ['org', 'openbmc'],
@@ -30,8 +31,8 @@ def org_dot_openbmc_match(name, sep='.', prefix=''):
 
 
 class ListMatch(object):
-    def __init__(self, l):
-        self.l = l
+    def __init__(self, lst):
+        self.lst = lst
 
     def __call__(self, match):
         return match in self.l
