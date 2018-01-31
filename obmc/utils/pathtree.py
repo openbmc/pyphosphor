@@ -20,7 +20,7 @@ class PathTreeItemIterator(object):
         self.path_tree = path_tree
         self.path = []
         self.itlist = []
-        self.subtree = ['/'] + list(filter(bool, subtree.split('/')))
+        self.subtree = ['/'] + filter(bool, subtree.split('/'))
         self.depth = depth
         d = path_tree.root
         for k in self.subtree:
@@ -28,15 +28,15 @@ class PathTreeItemIterator(object):
                 d = d[k]['children']
             except KeyError:
                 raise KeyError(subtree)
-        self.it = iter(d.items())
+        self.it = d.iteritems()
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        return next(super(PathTreeItemIterator, self))
+        return super(PathTreeItemIterator, self).next()
 
-    def __next__(self):
+    def next(self):
         key, value = self._next()
         path = self.subtree[0] + '/'.join(self.subtree[1:] + self.path)
         return path, value.get('data')
@@ -44,13 +44,13 @@ class PathTreeItemIterator(object):
     def _next(self):
         try:
             while True:
-                x = next(self.it)
+                x = self.it.next()
                 depth_exceeded = len(self.path) + 1 > self.depth
                 if self.depth and depth_exceeded:
                     continue
                 self.itlist.append(self.it)
                 self.path.append(x[0])
-                self.it = iter(x[1]['children'].items())
+                self.it = x[1]['children'].iteritems()
                 break
 
         except StopIteration:
@@ -68,7 +68,7 @@ class PathTreeKeyIterator(PathTreeItemIterator):
     def __init__(self, path_tree, subtree, depth):
         super(PathTreeKeyIterator, self).__init__(path_tree, subtree, depth)
 
-    def __next__(self):
+    def next(self):
         return super(PathTreeKeyIterator, self).next()[0]
 
 
@@ -92,7 +92,7 @@ class PathTree:
 
     def _get_node(self, key):
         kids = 'children'
-        elements = ['/'] + list(filter(bool, key.split('/')))
+        elements = ['/'] + filter(bool, key.split('/'))
         d = self.root
         for k in elements[:-1]:
             try:
@@ -106,14 +106,14 @@ class PathTree:
         return self
 
     def __missing__(self, key):
-        for x in self.keys():
+        for x in self.iterkeys():
             if key == x:
                 return False
         return True
 
     def __delitem__(self, key):
         kids = 'children'
-        elements = ['/'] + list(filter(bool, key.split('/')))
+        elements = ['/'] + filter(bool, key.split('/'))
         d = self.root
         for k in elements[:-1]:
             try:
@@ -126,7 +126,7 @@ class PathTree:
 
     def __setitem__(self, key, value):
         kids = 'children'
-        elements = ['/'] + list(filter(bool, key.split('/')))
+        elements = ['/'] + filter(bool, key.split('/'))
         d = self.root
         for k in elements[:-1]:
             d = d.setdefault(k, {kids: {}})[kids]
@@ -152,7 +152,7 @@ class PathTree:
         return x
 
     def get_children(self, key):
-        return [x for x in self._get_node(key)['children'].keys()]
+        return [x for x in self._get_node(key)['children'].iterkeys()]
 
     def demote(self, key):
         n = self._get_node(key)
@@ -174,12 +174,12 @@ class PathTree:
 
     def iterkeys(self, subtree='/', depth=None):
         if not self.root:
-            return iter({}.keys())
+            return {}.iterkeys()
         return PathTreeKeyIterator(self, subtree, depth)
 
     def iteritems(self, subtree='/', depth=None):
         if not self.root:
-            return iter({}.items())
+            return {}.iteritems()
         return PathTreeItemIterator(self, subtree, depth)
 
     def dumpd(self, subtree='/'):
@@ -187,7 +187,7 @@ class PathTree:
         d = result
 
         for k, v in self.iteritems(subtree):
-            elements = ['/'] + list(filter(bool, k.split('/')))
+            elements = ['/'] + filter(bool, k.split('/'))
             d = result
             for k in elements:
                 d = d.setdefault(k, {})

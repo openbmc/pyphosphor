@@ -91,7 +91,7 @@ class BootCountSensor(VirtualSensor):
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
-        print("Setting boot count to " + str(value))
+        print "Setting boot count to " + str(value)
         SensorValue.setValue(self, value)
 
 
@@ -121,7 +121,7 @@ class PowerSupplyDeratingSensor(VirtualSensor):
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
-        print("Setting Power Supply Derating is not allowed")
+        print "Setting Power Supply Derating is not allowed"
 
 
 class TurboAllowedSensor(VirtualSensor):

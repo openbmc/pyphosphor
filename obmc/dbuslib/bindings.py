@@ -187,7 +187,7 @@ class DbusObjectManager(dbus.service.Object):
         obj = self.objects.pop(object_path, None)
         obj.remove_from_connection()
         if self._export:
-            self.InterfacesRemoved(object_path, list(obj.properties.keys()))
+            self.InterfacesRemoved(object_path, obj.properties.keys())
 
     def get(self, object_path, default=None):
         return self.objects.get(object_path, default)
@@ -197,7 +197,7 @@ class DbusObjectManager(dbus.service.Object):
         in_signature='', out_signature='a{oa{sa{sv}}}')
     def GetManagedObjects(self):
         data = {}
-        for objpath in list(self.objects.keys()):
+        for objpath in self.objects.keys():
             data[objpath] = self.objects[objpath].properties
         return data
 

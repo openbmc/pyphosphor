@@ -27,13 +27,13 @@ def dts_encode(obj, fd, **kw):
 
     if(isinstance(obj, dict)):
         nodes = []
-        for k, v in obj.items():
+        for k, v in obj.iteritems():
             if(isinstance(v, dict)):
                 nodes.append((k, v))
                 continue
-            if(isinstance(v, str) and v.lower() == 'true'):
+            if(isinstance(v, basestring) and v.lower() == 'true'):
                 fd.write('%s%s' % (tab, k))
-            elif(isinstance(v, str) and v.lower() == 'false'):
+            elif(isinstance(v, basestring) and v.lower() == 'false'):
                 continue
             else:
                 fd.write('%s%s = ' % (tab, k))
@@ -51,7 +51,7 @@ def dts_encode(obj, fd, **kw):
         else:
             fd.write("<%d>" % obj)
 
-    if(isinstance(obj, str)):
+    if(isinstance(obj, basestring)):
         fd.write("\"%s\"" % obj)
 
     if(isinstance(obj, list)):
