@@ -156,7 +156,7 @@ class PowerSupplyRedundancySensor(VirtualSensor):
 class PowerSupplyDeratingSensor(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
-        super(PowerSupplyDeratingSensor, self).setValue(10)
+        super(PowerSupplyDeratingSensor, self).setValue(90)
 
     ## override setValue method
     @dbus.service.method(
