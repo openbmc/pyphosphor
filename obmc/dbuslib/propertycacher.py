@@ -15,7 +15,12 @@
 # permissions and limitations under the License.
 
 import os
-import cPickle
+# TODO: remove support for python 2 once we're at yocto 2.4
+import sys
+if sys.version_info[0] < 3:
+    import cPickle as pickle
+else:
+    import pickle
 import json
 
 CACHE_PATH = '/var/cache/obmc/'
@@ -28,7 +33,7 @@ def getCacheFilename(obj_path, iface_name):
 
 
 def save(obj_path, iface_name, properties):
-    print "Caching: "+obj_path
+    print("Caching: "+obj_path)
     filename = getCacheFilename(obj_path, iface_name)
     parent = os.path.dirname(filename)
     try:
@@ -39,11 +44,11 @@ def save(obj_path, iface_name, properties):
                 ## use json module to convert dbus datatypes
                 props = json.dumps(properties[iface_name])
                 prop_obj = json.loads(props)
-                cPickle.dump(prop_obj, output)
+                pickle.dump(prop_obj, output)
             except Exception as e:
-                print "ERROR: "+str(e)
+                print("ERROR: "+str(e))
     except:
-        print "ERROR opening cache file: "+filename
+        print("ERROR opening cache file: "+filename)
 
 
 def load(obj_path, iface_name, properties):
@@ -52,14 +57,14 @@ def load(obj_path, iface_name, properties):
     if (os.path.isfile(filename)):
         if iface_name in properties:
             properties[iface_name] = {}
-        print "Loading from cache: "+filename
+        print("Loading from cache: "+filename)
         try:
             p = open(filename, 'rb')
-            data = cPickle.load(p)
-            for prop in data.keys():
+            data = pickle.load(p)
+            for prop in list(data.keys()):
                 properties[iface_name][prop] = data[prop]
 
         except Exception as e:
-            print "ERROR: Loading cache file: " + str(e)
+            print("ERROR: Loading cache file: " + str(e))
         finally:
             p.close()

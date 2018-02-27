@@ -91,7 +91,7 @@ class BootCountSensor(VirtualSensor):
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
-        print "Setting boot count to " + str(value)
+        print("Setting boot count to " + str(value))
         SensorValue.setValue(self, value)
 
 
@@ -129,7 +129,7 @@ class PowerSupplyRedundancySensor(VirtualSensor):
             intf = self.getPowerSupplyInterface()
             intf.Set(self.iface, self.property_name, False)
         else:
-            print "Invalid Power Supply Redundancy value"
+            print("Invalid Power Supply Redundancy value")
             return
         super(PowerSupplyRedundancySensor, self).setValue(value)
 
@@ -144,7 +144,7 @@ class PowerSupplyRedundancySensor(VirtualSensor):
         elif (value == 0):
             return "Disabled"
         else:
-            print "Unable to determine Power Supply Redundancy value"
+            print("Unable to determine Power Supply Redundancy value")
             return ""
 
     def getPowerSupplyInterface(self):
@@ -162,7 +162,7 @@ class PowerSupplyDeratingSensor(VirtualSensor):
     @dbus.service.method(
         SensorValue.IFACE_NAME, in_signature='v', out_signature='')
     def setValue(self, value):
-        print "Setting Power Supply Derating is not allowed"
+        print("Setting Power Supply Derating is not allowed")
 
 
 class TurboAllowedSensor(VirtualSensor):
