@@ -20,7 +20,7 @@ class PathTreeItemIterator(object):
         self.path_tree = path_tree
         self.path = []
         self.itlist = []
-        self.subtree = ['/'] + filter(bool, subtree.split('/'))
+        self.subtree = ['/'] + list(filter(bool, subtree.split('/')))
         self.depth = depth
         d = path_tree.root
         for k in self.subtree:
@@ -28,29 +28,41 @@ class PathTreeItemIterator(object):
                 d = d[k]['children']
             except KeyError:
                 raise KeyError(subtree)
-        self.it = d.iteritems()
+        # TODO: openbmc/openbmc#2994 remove python 2 support
+        try:  # python 2
+            self.it = d.iteritems()
+        except AttributeError:  # python 3
+            self.it = iter(d.items())
 
     def __iter__(self):
         return self
 
-    def __next__(self):
-        return super(PathTreeItemIterator, self).next()
-
+    # TODO: openbmc/openbmc#2994 remove python 2 support
+    # python 2
     def next(self):
         key, value = self._next()
         path = self.subtree[0] + '/'.join(self.subtree[1:] + self.path)
         return path, value.get('data')
 
+    # python 3
+    import sys
+    if sys.version_info[0] > 2:
+        __next__ = next
+
     def _next(self):
         try:
             while True:
-                x = self.it.next()
+                x = next(self.it)
                 depth_exceeded = len(self.path) + 1 > self.depth
                 if self.depth and depth_exceeded:
                     continue
                 self.itlist.append(self.it)
                 self.path.append(x[0])
-                self.it = x[1]['children'].iteritems()
+                # TODO: openbmc/openbmc#2994 remove python 2 support
+                try:  # python 2
+                    self.it = x[1]['children'].iteritems()
+                except AttributeError:  # python 3
+                    self.it = iter(x[1]['children'].items())
                 break
 
         except StopIteration:
@@ -68,8 +80,15 @@ class PathTreeKeyIterator(PathTreeItemIterator):
     def __init__(self, path_tree, subtree, depth):
         super(PathTreeKeyIterator, self).__init__(path_tree, subtree, depth)
 
+    # TODO: openbmc/openbmc#2994 remove python 2 support
+    # python 2
     def next(self):
         return super(PathTreeKeyIterator, self).next()[0]
+
+    # python 3
+    import sys
+    if sys.version_info[0] > 2:
+        __next__ = next
 
 
 class PathTree:
@@ -92,7 +111,7 @@ class PathTree:
 
     def _get_node(self, key):
         kids = 'children'
-        elements = ['/'] + filter(bool, key.split('/'))
+        elements = ['/'] + list(filter(bool, key.split('/')))
         d = self.root
         for k in elements[:-1]:
             try:
@@ -113,7 +132,7 @@ class PathTree:
 
     def __delitem__(self, key):
         kids = 'children'
-        elements = ['/'] + filter(bool, key.split('/'))
+        elements = ['/'] + list(filter(bool, key.split('/')))
         d = self.root
         for k in elements[:-1]:
             try:
@@ -126,7 +145,7 @@ class PathTree:
 
     def __setitem__(self, key, value):
         kids = 'children'
-        elements = ['/'] + filter(bool, key.split('/'))
+        elements = ['/'] + list(filter(bool, key.split('/')))
         d = self.root
         for k in elements[:-1]:
             d = d.setdefault(k, {kids: {}})[kids]
@@ -152,7 +171,7 @@ class PathTree:
         return x
 
     def get_children(self, key):
-        return [x for x in self._get_node(key)['children'].iterkeys()]
+        return [x for x in self._get_node(key)['children'].keys()]
 
     def demote(self, key):
         n = self._get_node(key)
@@ -174,12 +193,20 @@ class PathTree:
 
     def iterkeys(self, subtree='/', depth=None):
         if not self.root:
-            return {}.iterkeys()
+            # TODO: openbmc/openbmc#2994 remove python 2 support
+            try:  # python 2
+                return {}.iterkeys()
+            except AttributeError:  # python 3
+                return iter({}.keys())
         return PathTreeKeyIterator(self, subtree, depth)
 
     def iteritems(self, subtree='/', depth=None):
         if not self.root:
-            return {}.iteritems()
+            # TODO: openbmc/openbmc#2994 remove python 2 support
+            try:  # python 2
+                return {}.iteritems()
+            except AttributeError:  # python 3
+                return iter({}.items())
         return PathTreeItemIterator(self, subtree, depth)
 
     def dumpd(self, subtree='/'):
@@ -187,7 +214,7 @@ class PathTree:
         d = result
 
         for k, v in self.iteritems(subtree):
-            elements = ['/'] + filter(bool, k.split('/'))
+            elements = ['/'] + list(filter(bool, k.split('/')))
             d = result
             for k in elements:
                 d = d.setdefault(k, {})
