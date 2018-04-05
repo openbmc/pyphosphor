@@ -30,14 +30,6 @@ def org_dot_openbmc_match(name, sep='.', prefix=''):
         [x in name or name in x for x in names])
 
 
-class ListMatch(object):
-    def __init__(self, lst):
-        self.lst = lst
-
-    def __call__(self, match):
-        return match in self.l
-
-
 def find_case_insensitive(value, lst):
     return next((x for x in lst if x.lower() == value.lower()), None)
 
