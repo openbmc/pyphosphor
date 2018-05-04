@@ -53,9 +53,9 @@ class PathTreeItemIterator(object):
         try:
             while True:
                 x = next(self.it)
-                depth_exceeded = len(self.path) + 1 > self.depth
-                if self.depth and depth_exceeded:
-                    continue
+                if self.depth:
+                    if len(self.path) + 1 > self.depth:
+                        continue
                 self.itlist.append(self.it)
                 self.path.append(x[0])
                 # TODO: openbmc/openbmc#2994 remove python 2 support
@@ -122,7 +122,7 @@ class PathTree:
         return d[elements[-1]]
 
     def __iter__(self):
-        return self
+        return PathTreeItemIterator(self, '/', None)
 
     def __missing__(self, key):
         for x in self.iterkeys():
