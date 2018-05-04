@@ -53,7 +53,8 @@ class PathTreeItemIterator(object):
         try:
             while True:
                 x = next(self.it)
-                depth_exceeded = len(self.path) + 1 > self.depth
+                depth_exceeded = (len(self.path) + 1 > self.depth
+                        if self.depth else False)
                 if self.depth and depth_exceeded:
                     continue
                 self.itlist.append(self.it)
@@ -122,7 +123,7 @@ class PathTree:
         return d[elements[-1]]
 
     def __iter__(self):
-        return self
+        return PathTreeItemIterator(self, '/', None)
 
     def __missing__(self, key):
         for x in self.iterkeys():
