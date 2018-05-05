@@ -1,7 +1,6 @@
 import unittest
 
 from .pathtree import PathTree
-from pprint import pprint
 
 class PathTreeTest(unittest.TestCase):
     def test_set_depth_1(self):
@@ -305,3 +304,45 @@ class PathTreeTest(unittest.TestCase):
         pt['/a/c'] = None
         pt['/b'] = 4
         self.assertEquals(set([('/a/b', 2)]), set(pt.dataitems(subtree='/a', depth=1)))
+
+import timeit
+import sys
+
+def depth_stress(pt, k):
+    pt[k] = 1
+    pt[k] = pt[k] + 1
+    del pt[k]
+
+depth_setup = """\
+from __main__ import depth_stress
+from obmc.utils.pathtree import PathTree
+pt = PathTree()
+key = '/' + '/'.join(['a'] * {})
+"""
+
+def width_stress(pt, k):
+    pt.get_children(k)
+
+width_setup = """\
+from __main__ import width_stress
+from obmc.utils.pathtree import PathTree
+pt = PathTree()
+for i in range(0, {}):
+    pt["/{}/a".format(i)] = i
+key = '/0/a'
+"""
+
+if __name__ == "__main__":
+    print("Depth tests:")
+    for depth in range(1, 11):
+        setup = depth_setup.format(depth)
+        stmt = "depth_stress(pt, key)"
+        time = timeit.timeit(stmt, setup=setup)
+        print("\t{}: {}".format(depth, time))
+    print
+    print("Width tests:")
+    for width in map(lambda x: 2 ** x, range(0, 21)):
+        setup = width_setup.format(width, "{}")
+        stmt = "width_stress(pt, key)"
+        time = timeit.timeit(stmt, setup=setup)
+        print("\t{}: {}".format(width, time))
