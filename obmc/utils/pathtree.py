@@ -95,6 +95,7 @@ class PathTreeKeyIterator(PathTreeItemIterator):
 class PathTree:
     def __init__(self):
         self.root = {}
+        self.cache = {}
 
     def _try_delete_parent(self, elements):
         if len(elements) == 1:
@@ -132,6 +133,8 @@ class PathTree:
         return True
 
     def __delitem__(self, key):
+        if key in self.cache:
+            del self.cache[key]
         kids = 'children'
         elements = ['/'] + list(filter(bool, key.split('/')))
         d = self.root
@@ -145,6 +148,7 @@ class PathTree:
         self._try_delete_parent(elements)
 
     def __setitem__(self, key, value):
+        self.cache[key] = value
         kids = 'children'
         elements = ['/'] + list(filter(bool, key.split('/')))
         d = self.root
@@ -155,7 +159,7 @@ class PathTree:
         d[elements[-1]].update({kids: children, 'data': value})
 
     def __getitem__(self, key):
-        return self._get_node(key).get('data')
+        return self.cache[key]
 
     def setdefault(self, key, default):
         if not self.get(key):
