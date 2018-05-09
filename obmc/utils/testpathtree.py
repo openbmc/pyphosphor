@@ -336,6 +336,20 @@ for i in range(0, {}):
 key = '/0/a'
 """
 
+def iter_stress(pt):
+    for i in pt.dataitems():
+        pass
+
+iter_setup = """\
+from __main__ import iter_stress
+from obmc.utils.pathtree import PathTree
+pt = PathTree()
+for i in ('/' + '/'.join([chr(ord('a') + x)] * {}) for x in range(0, 26)):
+    for j in range(0, {}):
+        k = "{}".format(i, j)
+        pt[k] = k
+"""
+
 if __name__ == "__main__":
     print("Depth tests:")
     for depth in range(1, 11):
@@ -350,3 +364,12 @@ if __name__ == "__main__":
         stmt = "width_stress(pt, key)"
         time = timeit.timeit(stmt, setup=setup)
         print("\t{}: {}".format(width, time))
+    print
+    print("Iteration tests:")
+    n = 1000
+    for depth in range(1, 5):
+        for width in range(1, 5):
+            setup = iter_setup.format(depth, width, "{}/{}")
+            stmt = "iter_stress(pt)"
+            time = timeit.timeit(stmt, setup=setup, number=n)
+            print("\tdepth={}, width={}, n={}: {}".format(depth, width, n, time))
