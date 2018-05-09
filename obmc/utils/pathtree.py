@@ -194,6 +194,19 @@ class PathTree:
         return [x for x in self.iteritems(subtree, depth)]
 
     def dataitems(self, subtree='/', depth=None):
+        # dataitems() must return an iterable object containing all of the
+        # items explicitly inserted into the tree, rooted at subtree with
+        # depth number of path elements from the subtree root.
+        #
+        # Calling dataitems() to request all of the populated entries is
+        # unfortunately common, and it's (also) unfortunately expensive to
+        # generate (done by iterating over the entire tree). However, given we
+        # have a flat dict whose job is to cache the explicitly inserted values
+        # we can leverage that to provide a cheap-to-calculate answer to
+        # requests for the entire set of populated entries
+        if subtree == '/' and not depth:
+            return self.cache.items()
+
         return [x for x in self.iteritems(subtree, depth)
                 if x[1] is not None]
 
