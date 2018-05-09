@@ -191,6 +191,24 @@ class PathTree:
         return [x for x in self.iteritems(subtree, depth)]
 
     def dataitems(self, subtree='/', depth=None):
+        # The contract of dataitems() is to return an iterable object of all
+        # 'populated' keys rooted at subtree with a maximum length of depth.
+        # Due to the nature of the PathTree datastructure this is expensive to
+        # calculate (ignoring the cache for the moment), as we need to iterate
+        # the entirety of the exploded path space to find nodes with 'data'
+        # keys whose value is not None.
+        #
+        # However, under the restricted circumstance of the caller wanting to
+        # iterate the full tree (the subtree is rooted at the root node and
+        # there is no depth limit), taking into account that we have the
+        # flat-dict cache of values in the tree as inserted via __setitem__()
+        # we also have the set of populated keys at our disposal. So rather
+        # than waste time traversing the tree and testing the validity of each
+        # node with respect to its 'data' value, simply return the items()
+        # result from the cache.
+        if subtree == '/' and not depth:
+            return self.cache.items()
+
         return [x for x in self.iteritems(subtree, depth)
                 if x[1] is not None]
 
