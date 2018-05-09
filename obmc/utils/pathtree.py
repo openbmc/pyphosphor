@@ -192,6 +192,9 @@ class PathTree:
         return [x for x in self.iteritems(subtree, depth)]
 
     def dataitems(self, subtree='/', depth=None):
+        if subtree == '/' and not depth:
+            return self.cache.items()
+
         return [x for x in self.iteritems(subtree, depth)
                 if x[1] is not None]
 
@@ -202,6 +205,10 @@ class PathTree:
                 return {}.iterkeys()
             except AttributeError:  # python 3
                 return iter({}.keys())
+
+        if depth is None:
+            return self.cache.keys()
+
         return PathTreeKeyIterator(self, subtree, depth)
 
     def iteritems(self, subtree='/', depth=None):
@@ -211,6 +218,7 @@ class PathTree:
                 return {}.iteritems()
             except AttributeError:  # python 3
                 return iter({}.items())
+
         return PathTreeItemIterator(self, subtree, depth)
 
     def dumpd(self, subtree='/'):
