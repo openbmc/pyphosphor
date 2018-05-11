@@ -175,7 +175,7 @@ class PathTree:
         return x
 
     def get_children(self, key):
-        return [x for x in self._get_node(key)['children'].keys()]
+        return (x for x in self._get_node(key)['children'].keys())
 
     def demote(self, key):
         n = self._get_node(key)
@@ -183,20 +183,20 @@ class PathTree:
             del n['data']
 
     def keys(self, subtree='/', depth=None):
-        return [x for x in self.iterkeys(subtree, depth)]
+        return (x for x in self.iterkeys(subtree, depth))
 
     def values(self, subtree='/', depth=None):
-        return [x[1] for x in self.iteritems(subtree, depth)]
+        return (x[1] for x in self.iteritems(subtree, depth))
 
     def items(self, subtree='/', depth=None):
-        return [x for x in self.iteritems(subtree, depth)]
+        return (x for x in self.iteritems(subtree, depth))
 
     def dataitems(self, subtree='/', depth=None):
         if subtree == '/' and not depth:
             return self.cache.items()
 
-        return [x for x in self.iteritems(subtree, depth)
-                if x[1] is not None]
+        return (x for x in self.iteritems(subtree, depth)
+                if x[1] is not None)
 
     def iterkeys(self, subtree='/', depth=None):
         if not self.root:
