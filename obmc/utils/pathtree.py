@@ -157,7 +157,10 @@ class PathTree:
         d[elements[-1]].update({kids: children, 'data': value})
 
     def __getitem__(self, key):
-        return self.cache[key]
+        if key in self.cache:
+            return self.cache[key]
+
+        return self._get_node(key).get('data')
 
     def setdefault(self, key, default):
         if not self.get(key):
