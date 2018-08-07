@@ -50,36 +50,6 @@ class VirtualSensor(SensorValue):
 CONTROL_IFACE = 'org.openbmc.Control'
 
 
-class BootProgressSensor(VirtualSensor):
-    def __init__(self, bus, name):
-        VirtualSensor.__init__(self, bus, name)
-        self.setValue("Off")
-        bus.add_signal_receiver(
-            self.SystemStateHandler, signal_name="GotoSystemState")
-
-    def SystemStateHandler(self, state):
-        if (state == "HOST_POWERED_OFF"):
-            self.setValue("Off")
-
-    # override setValue method
-    @dbus.service.method(
-        SensorValue.IFACE_NAME,
-        in_signature='v', out_signature='')
-    def setValue(self, value):
-        SensorValue.setValue(self, value)
-        if (value == "FW Progress, Starting OS"):
-            self.GotoSystemState("HOST_BOOTED")
-        self.BootProgress(value)
-
-    @dbus.service.signal(CONTROL_IFACE, signature='s')
-    def GotoSystemState(self, state):
-        pass
-
-    @dbus.service.signal(CONTROL_IFACE, signature='s')
-    def BootProgress(self, state):
-        pass
-
-
 class BootCountSensor(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
