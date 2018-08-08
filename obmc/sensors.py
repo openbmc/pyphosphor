@@ -50,21 +50,6 @@ class VirtualSensor(SensorValue):
 CONTROL_IFACE = 'org.openbmc.Control'
 
 
-class BootCountSensor(VirtualSensor):
-    def __init__(self, bus, name):
-        VirtualSensor.__init__(self, bus, name)
-        # Default boot count is 2.  Add 1 onto this to allow for an
-        # SBE side switch boot attempt
-        self.setValue(3)
-
-    # override setValue method for debug purposes
-    @dbus.service.method(
-        SensorValue.IFACE_NAME, in_signature='v', out_signature='')
-    def setValue(self, value):
-        print("Setting boot count to " + str(value))
-        SensorValue.setValue(self, value)
-
-
 class PowerSupplyRedundancySensor(VirtualSensor):
     def __init__(self, bus, name):
         VirtualSensor.__init__(self, bus, name)
