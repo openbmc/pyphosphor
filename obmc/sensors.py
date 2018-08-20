@@ -50,14 +50,3 @@ class VirtualSensor(SensorValue):
 CONTROL_IFACE = 'org.openbmc.Control'
 
 
-class PowerSupplyDeratingSensor(VirtualSensor):
-    def __init__(self, bus, name):
-        VirtualSensor.__init__(self, bus, name)
-        super(PowerSupplyDeratingSensor, self).setValue(90)
-
-    # override setValue method
-    @dbus.service.method(
-        SensorValue.IFACE_NAME, in_signature='v', out_signature='')
-    def setValue(self, value):
-        print("Setting Power Supply Derating is not allowed")
-
